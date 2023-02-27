@@ -195,6 +195,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Doctrine ORM
+        \LaravelDoctrine\ORM\DoctrineServiceProvider::class,
+
     ],
 
     /*
@@ -210,6 +213,9 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'EntityManager' => \LaravelDoctrine\ORM\Facades\EntityManager::class,
+        'Registry'      => \LaravelDoctrine\ORM\Facades\Registry::class,
+        'Doctrine'      => \LaravelDoctrine\ORM\Facades\Doctrine::class
     ])->toArray(),
 
 ];
