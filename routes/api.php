@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\UserApiController;
+use App\Http\Controllers\Api\SampleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +19,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', [UserApiController::class, 'test']);
+Route::get('/test', [SampleController::class, 'test']);
+Route::controller(SampleController::class)
+    ->group(function () {
+        Route::get('test', 'test');
+        Route::get('dql/dto', 'sampleDqlWithDto');
+        Route::get('repository', 'sampleRepository');
+        Route::post('schedule', 'createSchedules');
+        Route::post('user', 'createUser');
+        Route::post('user/{id}/todo', 'createUserTodo');
+    });

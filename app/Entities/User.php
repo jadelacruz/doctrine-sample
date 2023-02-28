@@ -46,7 +46,7 @@ class User
 
     public function __construct(
 
-        #[Column(length: 30)]
+        #[Column(length: 30, unique: true)]
         public string $name,
     
         #[Column(
