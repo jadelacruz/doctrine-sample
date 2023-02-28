@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Entities;
 
+use App\Enums\UserType;
 use App\Enums\UserGender;
 use App\Entities\Embed\Timestamp;
 use App\Entities\Embed\TimestampTrait;
@@ -19,10 +20,12 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\DBAL\Types\Types;
 
+
 /**
  * @property int         $id
  * @property string      $name
  * @property UserGender  $gender
+ * @property UserType    $type
  * @property ?Collection $todos
  * @property ?Timestamp  $timestamp
  * @method static getId()
@@ -45,13 +48,21 @@ class User
 
         #[Column(length: 30)]
         public string $name,
-
+    
         #[Column(
             type: Types::STRING,
             length: 1,
             enumType: UserGender::class
         )]
+
         public UserGender $gender,
+        
+        #[Column(
+            type: Types::STRING,
+            length: 8,
+            enumType: UserType::class
+        )]
+        public UserType $type,
 
         #[OneToMany(
             targetEntity: Todo::class,
