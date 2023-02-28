@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Entities;
 
-use Carbon\Carbon;
 use App\Enums\UserGender;
-use App\Constants\AppConstant;
 use App\Entities\Embed\Timestamp;
 use App\Entities\Embed\TimestampTrait;
 use App\Repositories\UserRepository;

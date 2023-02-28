@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Embeddable;
 class Timestamp
 {
     public function __construct(
+
         #[Column(type: Types::DATETIME_IMMUTABLE, options: [ 'default' => 'CURRENT_TIMESTAMP' ])]
         public \DateTimeImmutable|null $createdAt = new \DateTimeImmutable(),
     
@@ -18,5 +19,6 @@ class Timestamp
     
         #[Column(nullable: true)]
         public \DateTime|null $deletedAt = null
+        
     ) { }
 }

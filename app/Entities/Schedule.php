@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace App\Entities;
 
-use Carbon\Carbon;
-use App\Constants\AppConstant;
 use App\Entities\Embed\Timestamp;
 use App\Entities\Embed\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
@@ -42,7 +40,9 @@ class Schedule
         #[Embedded(class: Timestamp::class, columnPrefix: false)]
         private ?Timestamp $timestamp = null,
 
-    ) { }
+    ) { 
+        $this->timestamp = new Timestamp();
+    }
 
     public function getId(): int
     {

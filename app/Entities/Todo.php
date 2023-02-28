@@ -4,10 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Entities;
 
-use Carbon\Carbon;
-use App\Constants\AppConstant;
 use App\Entities\Embed\TimestampTrait;
-use Carbon\Traits\Timestamp;
+use App\Entities\Embed\Timestamp;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -38,8 +36,9 @@ class Todo
         #[Column(length: 255)]
         public string $description,
        
-        #[ManyToMany(targetEntity: Schedule::class, inversedBy: 'todos', cascade: ['persist', 'remove'])]
+        #[ManyToMany(targetEntity: Schedule::class, inversedBy: 'todos', cascade: ['persist'])]
         #[JoinTable(name: 'todos_schedules')]
+        #[JoinColumn(onDelete: 'cascade')]
         public ?Collection $schedules = null,
 
         #[ManyToOne(targetEntity: User::class, inversedBy: 'todos')]
@@ -53,8 +52,9 @@ class Todo
         #[Embedded(class: Timestamp::class, columnPrefix: false)]
         private ?Timestamp $timestamp = null,
 
-
-    ) { }
+    ) { 
+        $this->timestamp = new Timestamp();
+    }
     
     public function getId(): int
     {
