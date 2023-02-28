@@ -16,6 +16,18 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Embedded;
 
+
+/**
+ * @property int         $id
+ * @property \DateTime   $date
+ * @property \DateTime   $time
+ * @property ?Collection $todos
+ * @property ?Timestamp  $timestamp
+ * @method static getId()
+ * @method static getCreatedAt()
+ * @method static getUpdatedAt()
+ * @method static getDeletedAt()
+ */
 #[Entity]
 #[Table(name: 'schedule')]
 class Schedule

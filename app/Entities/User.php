@@ -19,7 +19,18 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\DBAL\Types\Types;
 
-
+/**
+ * @property int         $id
+ * @property string      $name
+ * @property UserGender  $gender
+ * @property ?Collection $todos
+ * @property ?Timestamp  $timestamp
+ * @method static getId()
+ * @method static getCreatedAt()
+ * @method static getUpdatedAt()
+ * @method static getDeletedAt()
+ * @method static addTodo()
+ */
 #[Entity(UserRepository::class)]
 #[Table(name: 'user')]
 class User

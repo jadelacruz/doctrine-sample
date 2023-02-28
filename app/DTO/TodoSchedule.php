@@ -4,6 +4,12 @@ declare(strict_types = 1);
 
 namespace App\DTO;
 
+/**
+ * @property-read string $title
+ * @property-read string $description
+ * @property-read \DateTime $date
+ * @property-read \DateTime $time
+ */
 class TodoSchedule
 {
     public function __construct(

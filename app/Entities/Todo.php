@@ -18,6 +18,19 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\Embedded;
 
+
+/**
+ * @property int         $id
+ * @property string      $title
+ * @property string      $description
+ * @property ?Collection $schedules
+ * @property ?User       $user
+ * @property ?Timestamp  $timestamp
+ * @method static getId()
+ * @method static getCreatedAt()
+ * @method static getUpdatedAt()
+ * @method static getDeletedAt()
+ */
 #[Entity]
 #[Table(name: 'todo')]
 class Todo
