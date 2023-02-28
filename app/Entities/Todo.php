@@ -6,18 +6,26 @@ namespace App\Entities;
 
 use Carbon\Carbon;
 use App\Constants\AppConstant;
+use App\Entities\Embed\TimestampTrait;
+use Carbon\Traits\Timestamp;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\Embedded;
 
 #[Entity]
 #[Table(name: 'todo')]
 class Todo
 {
+    use TimestampTrait;
+
     #[Id]
     #[Column, GeneratedValue]
     private int $id;
@@ -30,8 +38,9 @@ class Todo
         #[Column(length: 255)]
         public string $description,
        
-        #[Column]
-        public \DateTime $schedule,
+        #[ManyToMany(targetEntity: Schedule::class, inversedBy: 'todos', cascade: ['persist', 'remove'])]
+        #[JoinTable(name: 'todos_schedules')]
+        public ?Collection $schedules = null,
 
         #[ManyToOne(targetEntity: User::class, inversedBy: 'todos')]
         #[JoinColumn(
@@ -39,39 +48,16 @@ class Todo
             nullable: false,
             referencedColumnName: 'id'
         )]
-        public User|null $user = null,
+        public ?User $user = null,
 
-        #[Column(options: [ 'default' => 'CURRENT_TIMESTAMP' ])]
-        private \DateTime|null $createdAt = new \DateTime(),
+        #[Embedded(class: Timestamp::class, columnPrefix: false)]
+        private ?Timestamp $timestamp = null,
 
-        #[Column(columnDefinition: 'DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP')]
-        private \DateTime|null $updatedAt = null,
-
-        #[Column(nullable: true)]
-        private \DateTime|null $deletedAt = null
 
     ) { }
     
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(string $format = AppConstant::DATE_FORMAT): string
-    {
-        return Carbon::parse($this->createdAt)
-                ->format($format);
-    }
-
-    public function getUpdatedAt(string $format = AppConstant::DATE_FORMAT): string
-    {
-        return Carbon::parse($this->updatedAt)
-                ->format($format);
-    }
-
-    public function getDeletedAt(string $format = AppConstant::DATE_FORMAT): string
-    {
-        return Carbon::parse($this->createdAt)
-                ->format($format);
     }
 }
