@@ -130,12 +130,11 @@ class SampleController extends BaseController
 
     /**
      * Add "_e" on top any changes in the entity via event listener in "onFlush" event
+     * Event listener is binded to the global EntityManager's event manager
+     * via ServiceProvider named DataMapperServiceProvider
      */
     public function sampleEventListener(int $userId): JsonResponse
     {
-        $eventMgr = $this->entityManager->getEventManager();
-        $eventMgr->addEventListener([Events::onFlush], new SampleFlushListener);
-
         $user = $this->entityManager->find(User::class, $userId);
         if (!empty($user)) {
             $user->name = $user->name . '_c';
