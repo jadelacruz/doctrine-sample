@@ -25,6 +25,7 @@ Route::controller(SampleController::class)
         Route::get('event/{userId}', 'sampleEventListener');
         Route::get('dql/todo/{todoId}', 'sampleDqlWithDto');
         Route::get('repository', 'sampleRepository');
+        Route::get('employee/{employeeId}', 'sampleCustomDataType');
         Route::post('schedule', 'createSchedules');
         Route::post('user', 'createUser');
         Route::post('user/{userId}/todo', 'createUserTodo');

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Entities\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Request;
@@ -143,5 +144,17 @@ class SampleController extends BaseController
         }
 
         throw new \Exception('User doesn\'t exists.', 404);
+    }
+
+    public function sampleCustomDataType(int $employeeId)
+    {
+        /** @var ?Employee $employee */
+        $employee = $this->entityManager->find(Employee::class, $employeeId);
+
+        if (!empty($employee)) {
+            return Response::json($employee->money->getMoneyWithPesoCurrencySign());
+        }
+
+        throw new \Exception('Employee doesn\'t exists.', 404);
     }
 }
