@@ -14,12 +14,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Sanctum::ignoreMigrations();
-
-        $this->app->bind(
-            User::class,
-            Todo::class
-        );
     }
 
     /**

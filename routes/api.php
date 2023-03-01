@@ -22,10 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/test', [SampleController::class, 'test']);
 Route::controller(SampleController::class)
     ->group(function () {
-        Route::get('test', 'test');
-        Route::get('dql/dto', 'sampleDqlWithDto');
+        Route::get('event/{userId}', 'sampleEventListener');
+        Route::get('dql/todo/{todoId}', 'sampleDqlWithDto');
         Route::get('repository', 'sampleRepository');
         Route::post('schedule', 'createSchedules');
         Route::post('user', 'createUser');
-        Route::post('user/{id}/todo', 'createUserTodo');
+        Route::post('user/{userId}/todo', 'createUserTodo');
     });

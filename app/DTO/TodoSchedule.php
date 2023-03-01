@@ -13,9 +13,26 @@ namespace App\DTO;
 class TodoSchedule
 {
     public function __construct(
+
+        /**
+         * @var string
+         */
         public readonly string $title,
+
+        /**
+         * @var string
+         */
         public readonly string $description,
-        public readonly \DateTime $date,
-        public readonly \DateTime $time,
+
+        /**
+         * @var \DateTime|null
+         */
+        public readonly ?\DateTime $date,
+
+        /**
+         * @var \DateTime|null
+         */
+        public readonly ?\DateTime $time,
+        
     ) { }
 }

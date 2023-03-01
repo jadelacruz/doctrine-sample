@@ -18,7 +18,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\Embedded;
 
-
 /**
  * @property int         $id
  * @property string      $title

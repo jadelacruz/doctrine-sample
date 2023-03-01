@@ -4,17 +4,19 @@ declare(strict_types = 1);
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Response;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use App\Entities\Schedule;
 use App\Entities\Todo;
 use App\Entities\User;
 use App\Enums\UserGender;
 use App\Enums\UserType;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManager;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Response;
+use App\EventListener\SampleFlushListener;
 
 class SampleController extends BaseController
 {
@@ -22,47 +24,9 @@ class SampleController extends BaseController
         private EntityManager $entityManager
     ) { }
 
-    function test()
-    {
-        // $schedule1 = $entityManager->find(Schedule::class, 1);
-        // $user      = new User(
-        //     name  : 'Test Name', 
-        //     gender: UserGender::MALE,
-        //     type: UserType::EXTERNAL
-        // );
-
-        // $user->addTodo(new Todo(
-        //     title: 'Sample Todo',
-        //     description: 'Nothing to do',
-        // ), $schedule1);
-
-        // $entityManager->persist($user);
-        // $entityManager->flush();
-
-        // $result = $entityManager->createQueryBuilder()
-        //         ->select(sprintf(
-        //             'NEW %s(t.title, t.description, ts.date, ts.time)',
-        //             \App\DTO\TodoSchedule::class
-        //         ))
-        //         ->from(Todo::class, 't')
-        //         ->leftJoin('t.schedules', 'ts')
-        //         ->where('t.id = 1')
-        //         ->getQuery()
-        //         ->getResult();
-
-        // $result = $entityManager->createQueryBuilder()
-        //         ->select(sprintf(
-        //             'NEW %s(t.title, t.description, s.date, s.time)',
-        //             \App\DTO\TodoSchedule::class
-        //         ))
-        //         ->from(Schedule::class, 's')
-        //         ->leftJoin('s.todos', 't')
-        //         ->where('s.id = 1')
-        //         ->getQuery()
-        //         ->getResult();
-        // dd($result);
-    }
-
+    /**
+     * Create list of schedules
+     */
     public function createSchedules(): JsonResponse
     {
         $scheduleCount = 5;
@@ -81,6 +45,9 @@ class SampleController extends BaseController
         return Response::json(['message' => 'Schedules has been created']);
     }
 
+    /**
+     * Create a user
+     */
     public function createUser(): JsonResponse
     {
         try {
@@ -100,17 +67,22 @@ class SampleController extends BaseController
     }
 
     /**
+     * 
+     * Add todo record for given user
+     * 
      * @param int      $userId
      * @param int|null scheduleId
      * 
      */
     public function createUserTodo(int $userId): JsonResponse
     {
+        $evm = $this->entityManager->getEventManager();
+        $evm->addEventListener([Events::onFlush], new SampleFlushListener());
         /** @var User $user */
-        $user         = $this->entityManager->find(User::class, $userId);
-        $scheduleId   = Request::get('schedule_id');
+        $user       = $this->entityManager->find(User::class, $userId);
+        $scheduleId = Request::get('schedule_id');
 
-        if ($scheduleId !== null) {
+        if (empty($scheduleId) === false) {
             /** @var Schedule $schedule */
             $schedule = $this->entityManager->find(Schedule::class, $scheduleId);
         }
@@ -118,7 +90,7 @@ class SampleController extends BaseController
         $user->addTodo(new Todo(
             title: Request::get('title'),
             description: Request::get('description')
-        ), $schedule);
+        ), $schedule ?? null);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -126,7 +98,10 @@ class SampleController extends BaseController
         return Response::json($user->todos->toArray());
     }
 
-    public function sampleDqlWithDto(): JsonResponse
+    /**
+     * Use DQL to query all todo with their respective schedule and map the result to DTO TodoSchedule
+     */
+    public function sampleDqlWithDto(int $todoId): JsonResponse
     {
         $result = $this->entityManager
                     ->createQueryBuilder()
@@ -136,17 +111,38 @@ class SampleController extends BaseController
                     ))
                     ->from(Todo::class, 't')
                     ->leftJoin('t.schedules', 'ts')
-                    ->where('t.id = 1')
+                    ->where('t.id = ' . $todoId)
                     ->getQuery()
                     ->getResult();
         
         return Response::json($result);
     }
 
+    /**
+     * Filter users who has male as their gender value
+     */
     public function sampleRepository(): JsonResponse
     {
         return Response::json(
             $this->entityManager->getRepository(User::class)->getMaleUsers()
         );
+    }
+
+    /**
+     * Add "_e" on top any changes in the entity via event listener in "onFlush" event
+     */
+    public function sampleEventListener(int $userId): JsonResponse
+    {
+        $eventMgr = $this->entityManager->getEventManager();
+        $eventMgr->addEventListener([Events::onFlush], new SampleFlushListener);
+
+        $user = $this->entityManager->find(User::class, $userId);
+        if (!empty($user)) {
+            $user->name = $user->name . '_c';
+            $this->entityManager->flush();
+            return Response::json($user);
+        }
+
+        throw new \Exception('User doesn\'t exists.', 404);
     }
 }
