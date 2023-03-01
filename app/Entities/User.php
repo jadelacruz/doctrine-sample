@@ -41,8 +41,9 @@ class User
     use TimestampTrait;
 
     #[Id]
-    #[Column, GeneratedValue]
-    private int $id;
+    #[Column(type: Types::GUID)]
+    #[GeneratedValue(strategy: 'UUID')]
+    private string $id;
 
     public function __construct(
 

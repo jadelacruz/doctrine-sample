@@ -75,7 +75,7 @@ class SampleController extends BaseController
      * @param int|null scheduleId
      * 
      */
-    public function createUserTodo(int $userId): JsonResponse
+    public function createUserTodo(string $userId): JsonResponse
     {
         $evm = $this->entityManager->getEventManager();
         $evm->addEventListener([Events::onFlush], new SampleFlushListener());
@@ -122,10 +122,24 @@ class SampleController extends BaseController
     /**
      * Filter users who has male as their gender value
      */
-    public function sampleRepository(): JsonResponse
+    public function getMaleUsers(): JsonResponse
     {
         return Response::json(
-            $this->entityManager->getRepository(User::class)->getMaleUsers()
+            $this->entityManager
+                ->getRepository(User::class)
+                ->getMaleUsers()
+        );
+    }
+
+    /**
+     * Filter users who has female as their gender
+     */
+    public function getFemaleUsers(): JsonResponse
+    {
+        return Response::json(
+            $this->entityManager
+                ->getRepository(User::class)
+                ->getFemaleUsers()
         );
     }
 
@@ -134,7 +148,7 @@ class SampleController extends BaseController
      * Event listener is binded to the global EntityManager's event manager
      * via ServiceProvider named DataMapperServiceProvider
      */
-    public function sampleEventListener(int $userId): JsonResponse
+    public function sampleEventListener(string $userId): JsonResponse
     {
         $user = $this->entityManager->find(User::class, $userId);
         if (!empty($user)) {

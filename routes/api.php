@@ -24,9 +24,10 @@ Route::controller(SampleController::class)
     ->group(function () {
         Route::get('event/{userId}', 'sampleEventListener');
         Route::get('dql/todo/{todoId}', 'sampleDqlWithDto');
-        Route::get('repository', 'sampleRepository');
         Route::get('employee/{employeeId}', 'sampleCustomDataType');
         Route::post('schedule', 'createSchedules');
+        Route::get('user/male', 'getMaleUsers');
+        Route::get('user/female', 'getFemaleUsers');
         Route::post('user', 'createUser');
         Route::post('user/{userId}/todo', 'createUserTodo');
     });
