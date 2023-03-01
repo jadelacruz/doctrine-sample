@@ -10,6 +10,11 @@ class Money
         private float $money
     ) { }
 
+    public function __toString()
+    {
+        return (string)$this->money;
+    }
+
     public function getMoney(): float
     {
         return $this->money;
