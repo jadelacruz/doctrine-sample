@@ -16,7 +16,7 @@ use App\Entities\Todo;
 use App\Entities\User;
 use App\Enums\UserGender;
 use App\Enums\UserType;
-use App\EventListener\SampleFlushListener;
+use App\Events\SampleFlushListener;
 
 class SampleController extends BaseController
 {

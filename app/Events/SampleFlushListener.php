@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace App\EventListener;
+namespace App\Events;
 
 use App\Entities\User;
 use Doctrine\Common\EventSubscriber;
